@@ -1,4 +1,5 @@
 import 'package:alquran_app/common/contants.dart';
+import 'package:alquran_app/ui/searching_page.dart';
 import 'package:alquran_app/ui/surat_page.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        
         centerTitle: true,
         title: const Text(
           'Ahlul Quran',
@@ -194,38 +196,55 @@ class _HomePageState extends State<HomePage> {
                           color: AppColors.primary.withOpacity(0.3),
                         ),
                       ),
+                      //                     InkWell(
+                      // onTap: () {
+                      //   Navigator.push(context,
+                      //       MaterialPageRoute(builder: (context) {
+                      //     return const SuratPage();
+                      //   }));
+                      // },
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: 16.sp,
                         ),
                         child: Stack(
                           children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 24.sp),
-                                  child: SvgPicture.asset(
-                                    'assets/search.svg',
-                                    fit: BoxFit.fitHeight,
-                                    color: AppColors.primary,
-                                    height: 52.h,
-                                    width: 44.w,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 24.sp),
-                                  child: Text(
-                                    'Pencarian',
-                                    style: TextStyle(
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return const SearchingPage();
+                                  }),
+                                );
+                              },
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 24.sp),
+                                    child: SvgPicture.asset(
+                                      'assets/search.svg',
+                                      fit: BoxFit.fitHeight,
                                       color: AppColors.primary,
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.w800,
+                                      height: 52.h,
+                                      width: 44.w,
                                     ),
                                   ),
-                                )
-                              ],
+                                  Padding(
+                                    padding: EdgeInsets.only(bottom: 24.sp),
+                                    child: Text(
+                                      'Pencarian',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                             Positioned(
                               top: -4.sp,
