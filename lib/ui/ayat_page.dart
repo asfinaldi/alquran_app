@@ -16,9 +16,16 @@ class AyatPage extends StatefulWidget {
 }
 
 class _AyatPageState extends State<AyatPage> {
+  late String _searchQuery;
+  late int
+      _selectedAyat; // tambahkan variabel untuk menyimpan nomor ayat terpilih
+
   @override
   void initState() {
     context.read<AyatCubit>().getDetailSurat(widget.surat.nomor);
+    _searchQuery = '';
+    _selectedAyat =
+        -1; // inisialisasi nomor ayat terpilih dengan nilai -1 (tidak ada)
     super.initState();
   }
 
@@ -38,33 +45,72 @@ class _AyatPageState extends State<AyatPage> {
             );
           }
           if (state is AyatLoaded) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                final ayat = state.detail.ayat![index];
-                return Card(
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: AppColors.primary,
-                      child: Text(
-                        '${ayat.nomor}',
-                        style: const TextStyle(
-                          color: AppColors.white,
-                        ),
-                      ),
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Cari ayat...',
+                      prefixIcon: Icon(Icons.search),
                     ),
-                    title: Text(
-                      '${ayat.ar}',
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text('${ayat.idn}'),
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.toLowerCase();
+                        _selectedAyat =
+                            -1; // reset nomor ayat terpilih ketika pencarian berubah
+                      });
+                    },
                   ),
-                );
-              },
-              itemCount: state.detail.ayat!.length,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      final ayat = state.detail.ayat![index];
+                      if (_searchQuery.isEmpty ||
+                          ayat.ar!.toLowerCase().contains(_searchQuery) ||
+                          ayat.idn!.toLowerCase().contains(_searchQuery) ||
+                          ayat.nomor!.toString().contains(_searchQuery)) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedAyat = ayat.nomor!;
+                            });
+                          },
+                          child: Card(
+                            color: _selectedAyat == ayat.nomor!
+                                ? Colors.grey.shade200
+                                : null,
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: AppColors.primary,
+                                child: Text(
+                                  '${ayat.nomor}',
+                                  style: const TextStyle(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                              ),
+                              title: Text(
+                                '${ayat.ar}',
+                                textAlign: TextAlign.right,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text('${ayat.idn}'),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                    itemCount: state.detail.ayat!.length,
+                  ),
+                ),
+              ],
             );
           }
           if (state is AyatError) {
